@@ -40,13 +40,13 @@ class memoize(object):
 
         def flush_cache():
             with self.cache_lock:
-                for key in self.cache.keys():
+                for key in list(self.cache.keys()):
                     if (time.time() - self.cache[key][1]) > self.timeout:
                         del(self.cache[key])
 
         @wraps(fn)
         def wrapped(*args, **kwargs):
-            kw = kwargs.items()
+            kw = list(kwargs.items())
             kw.sort()
             key_str = repr((args, kw))
             key = md5(key_str).hexdigest()
