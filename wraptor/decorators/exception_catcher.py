@@ -1,12 +1,12 @@
 from functools import wraps
 import sys
-import Queue
+import queue
 
 def exception_catcher(fn):
     """ Catch exceptions raised by the decorated function.
         Call check() to raise any caught exceptions.
     """
-    exceptions = Queue.Queue()
+    exceptions = queue.Queue()
 
     @wraps(fn)
     def wrapped(*args, **kwargs):
@@ -21,8 +21,8 @@ def exception_catcher(fn):
         try:
             item = exceptions.get(block=False)
             klass, value, tb = item
-            raise klass, value, tb
-        except Queue.Empty:
+            raise klass(value).with_traceback(tb)
+        except queue.Empty:
             pass
 
     setattr(wrapped, 'check', check)

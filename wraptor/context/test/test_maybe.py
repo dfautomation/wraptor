@@ -3,8 +3,8 @@ from threading import Thread
 from wraptor.context import maybe
 
 def test_basic():
-    with maybe(lambda: False):
-        assert False
+    with maybe(lambda: False) as result:
+        assert result == False
 
     check = False
     with maybe(lambda: True):
