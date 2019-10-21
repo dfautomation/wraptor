@@ -22,5 +22,5 @@ flake8:
 	. venv/bin/activate && flake8 --config=.flake8 .
 
 venv: dev_requirements.txt
-	test -d venv || virtualenv venv
+	test -d venv || python3 -m virtualenv venv
 	. venv/bin/activate && pip install -r dev_requirements.txt

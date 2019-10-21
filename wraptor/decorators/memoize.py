@@ -17,6 +17,7 @@ class memoize(object):
 
         This decorator is thread safe.
     """
+
     def __init__(self, timeout=None, manual_flush=False, instance_method=False):
         self.timeout = timeout
         self.manual_flush = manual_flush
@@ -40,16 +41,25 @@ class memoize(object):
 
         def flush_cache():
             with self.cache_lock:
-                for key in self.cache.keys():
-                    if (time.time() - self.cache[key][1]) > self.timeout:
-                        del(self.cache[key])
+                removables = set()
+                for key in list(self.cache.keys()):
+                    if self.timeout is not None and (time.time() - self.cache[key][1]) > self.timeout:
+                        removables.add(key)
+
+                    if self.timeout is None:
+                        removables.add(key)
+
+                for key in removables:
+                    self.cache.pop(key)
+
+                removables.clear()
 
         @wraps(fn)
         def wrapped(*args, **kwargs):
-            kw = kwargs.items()
+            kw = list(kwargs.items())
             kw.sort()
-            key_str = repr((args, kw))
-            key = md5(key_str).hexdigest()
+            key_str = repr((fn, args, kw))
+            key = md5(key_str.encode('utf-8', errors='replace')).hexdigest()
 
             with self.cache_lock:
                 try:

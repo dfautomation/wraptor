@@ -59,10 +59,10 @@ def test_auto_flush():
         pass
 
     fn(1, 2, 3)
-    assert len(memoize_inst.cache.keys()) == 1
+    assert len(list(memoize_inst.cache.keys())) == 1
     time.sleep(.2)
     fn(1, 2, 3)
-    assert len(memoize_inst.cache.keys()) == 1
+    assert len(list(memoize_inst.cache.keys())) == 1
 
 def test_manual_flush():
     memoize_inst = memoize(timeout=.1, manual_flush=True)
@@ -72,13 +72,13 @@ def test_manual_flush():
         pass
 
     fn(1, 2, 3)
-    assert len(memoize_inst.cache.keys()) == 1
+    assert len(list(memoize_inst.cache.keys())) == 1
     time.sleep(.2)
     fn(3, 4, 5)
-    assert len(memoize_inst.cache.keys()) == 2
+    assert len(list(memoize_inst.cache.keys())) == 2
     time.sleep(.2)
     fn.flush_cache()
-    assert len(memoize_inst.cache.keys()) == 0
+    assert len(list(memoize_inst.cache.keys())) == 0
 
 def test_class_method():
     import random

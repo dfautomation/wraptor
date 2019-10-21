@@ -5,6 +5,7 @@ class throttle(object):
     """ Throttle a function to execute at most 1 time per <seconds> seconds
         The function is executed on the forward edge.
     """
+
     def __init__(self, seconds=1, instance_method=False, return_throttle_result=False):
         self.throttler = context.throttle(seconds=seconds)
         self.seconds = seconds
@@ -27,8 +28,9 @@ class throttle(object):
 
         @wraps(fn)
         def wrapped(*args, **kwargs):
-            with self.throttler:
-                result = fn(*args, **kwargs)
-                return self.return_throttle_result or result
+            with self.throttler as throttler:
+                if throttler:
+                    result = fn(*args, **kwargs)
+                    return self.return_throttle_result or result
             return False if self.return_throttle_result else None
         return wrapped
