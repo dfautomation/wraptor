@@ -1,6 +1,7 @@
 from functools import wraps
+from six.moves import queue
 import sys
-import queue
+
 
 def exception_catcher(fn):
     """ Catch exceptions raised by the decorated function.
